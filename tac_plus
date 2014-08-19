@@ -1,0 +1,39 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Description:       Run the tac-plus server listening for
+#                    AAA ( access, acounting and autorization request )
+#                    from routers or RAS (remote access servers) via
+#                    tacacs+ protocol
+### END INIT INFO
+PATH=/sbin:/usr/sbin:/bin:/usr/bin:/usr/local/bin:/usr/local/sbin
+DESC="TACACS+ server"
+NAME=tac_plus
+PIDFILE=/var/run/$NAME.pid
+SCRIPTNAME=/usr/local/share/tacacs+/tac-plus
+PROCESS=/usr/local/bin/$NAME
+CONFIG_FILE="/usr/local/share/tacacs+/tac_plus.conf"
+LOG_OPTS="-l /var/log/tac_plus/tac.log -d 16"
+DAEMON="$PROCESS -C $CONFIG_FILE $LOG_OPTS"
+# Source function library.
+. /etc/rc.d/init.d/functions
+# Start service
+  start() {
+      echo -n "Starting $DESC: "
+      daemon $DAEMON
+      }
+  stop() {
+      echo -n "Stopping $DESC: "
+      killproc tac_plus
+      }
+case "$1" in
+      start)
+            start
+            ;;
+      stop)
+            stop
+            ;;
+       *)
+       echo "Usage: $SCRIPNAME {start|stop}" >&2
+            exit 1
+esac
+exit 0
